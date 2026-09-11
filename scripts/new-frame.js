@@ -188,6 +188,9 @@ async function main() {
     meta.export = exportName;
     meta.author = url ? { name: author, url } : { name: author };
     meta.license = license;
+    // The example carries it so it never ships; a frame you made is the
+    // opposite case, and inheriting the flag would silently publish nothing.
+    delete meta.private;
     await writeFile(metaFile, `${JSON.stringify(meta, null, 2)}\n`);
 
     const indexFile = path.join(target, "index.ts");

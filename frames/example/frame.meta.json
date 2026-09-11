@@ -1,6 +1,7 @@
 {
   "$schema": "../../node_modules/@cardanvil/frame-kit/schema/frame-meta.schema.json",
   "id": "com.example.example",
+  "private": true,
   "entry": "./index.ts",
   "export": "exampleFrame",
   "author": {
