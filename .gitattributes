@@ -1,0 +1,9 @@
+# Text is normalized to LF in the repository and checked out as LF everywhere,
+# so frame configs are byte-identical across platforms.
+* text=auto eol=lf
+
+# Frame art must never be touched by line-ending conversion. Packaging names
+# every asset after its own hash, so a single altered byte changes the bundle.
+*.png binary
+*.jpg binary
+*.jpeg binary

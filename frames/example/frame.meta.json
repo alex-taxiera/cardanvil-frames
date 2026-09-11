@@ -1,0 +1,10 @@
+{
+  "$schema": "../../node_modules/@cardanvil/frame-kit/schema/frame-meta.schema.json",
+  "id": "com.example.example",
+  "entry": "./index.ts",
+  "export": "exampleFrame",
+  "author": {
+    "name": "Your Name"
+  },
+  "license": "CC-BY-4.0"
+}

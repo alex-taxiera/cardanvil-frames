@@ -1,0 +1,50 @@
+name: Validate frames
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: package.json
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Every check below runs even when an earlier one fails, so one push
+      # tells you everything that is wrong rather than the first thing.
+      # frame-kit validate is already all-or-nothing per run: it collects
+      # every problem across every frame and annotates the diff.
+      - name: Frames
+        run: pnpm validate --summary-md "$GITHUB_STEP_SUMMARY"
+
+      - name: Types
+        if: success() || failure()
+        run: pnpm typecheck
+
+      - name: Lint
+        if: success() || failure()
+        run: pnpm lint
+
+      - name: Formatting
+        if: success() || failure()
+        run: pnpm format:ci
+
+      # Proves the frames actually pack, so a release never discovers a
+      # packaging problem after it has already tagged.
+      - name: Pack
+        if: success() || failure()
+        run: pnpm exec frame-kit build --out "$RUNNER_TEMP/frames" --version 0.0.0-pr

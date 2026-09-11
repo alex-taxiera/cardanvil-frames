@@ -1,0 +1,31 @@
+{
+  "name": "Card Anvil frame authoring",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:1-24-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  // corepack honours the packageManager field, so this gets the exact pinned
+  // pnpm rather than whatever happens to be newest.
+  "postCreateCommand": "corepack enable && pnpm install",
+  // Frame art is large: a full set of 3264 x 4440 images runs to hundreds of
+  // megabytes, and the default Codespace disk is not enough for several.
+  "hostRequirements": {
+    "cpus": 4,
+    "memory": "8gb",
+    "storage": "32gb"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "editorconfig.editorconfig"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "typescript.tsdk": "node_modules/typescript/lib"
+      }
+    }
+  }
+}

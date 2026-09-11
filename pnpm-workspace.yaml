@@ -1,0 +1,10 @@
+# Not a workspace: every frame lives in the one root package, so there is a
+# single node_modules, a single install, and nothing to re-install after adding
+# a frame. This file exists to approve esbuild's postinstall, which Vite needs.
+allowBuilds:
+  esbuild: true
+# Every version of the frame contract, rather than a list that has to be
+# edited on each release. It is the package this repository exists to use, and
+# it comes from the same place this template does.
+minimumReleaseAgeExclude:
+  - "@cardanvil/frame-kit"

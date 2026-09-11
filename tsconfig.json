@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "lib": ["ESNext", "DOM"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "moduleDetection": "force",
+    // "vite/client" is what makes `import w from "./w.png"` type-check;
+    // "node" is for scripts/.
+    "types": ["vite/client", "node"],
+    "skipLibCheck": true,
+    "noEmit": true,
+
+    /* Deliberately as strict as Card Anvil itself. A frame that only compiles
+       under laxer settings becomes a surprise error the day the app loads it. */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+    "noUncheckedIndexedAccess": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["frames", "scripts", "*.ts"]
+}

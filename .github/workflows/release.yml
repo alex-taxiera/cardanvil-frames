@@ -1,0 +1,153 @@
+name: Release frames
+
+# Everything ships together under one version: pick how big a jump this is and
+# press Run. You never type a version number and never touch git.
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: "How much to raise the version"
+        required: true
+        default: patch
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+      notes:
+        description: "Optional note to put at the top of the release"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          # Tags are how the next version is worked out, and a shallow clone
+          # fetches none. A repository made from the template has no tags at
+          # all for its first release; the step below handles that.
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: package.json
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Work out the next version
+        id: version
+        env:
+          BUMP: ${{ inputs.bump }}
+        run: |
+          set -euo pipefail
+          PREVIOUS="$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -n 1)"
+          BASE="${PREVIOUS#v}"
+          BASE="${BASE:-0.0.0}"
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$BASE"
+          case "$BUMP" in
+            major) MAJOR=$((MAJOR + 1)); MINOR=0; PATCH=0 ;;
+            minor) MINOR=$((MINOR + 1)); PATCH=0 ;;
+            patch) PATCH=$((PATCH + 1)) ;;
+            *) echo "Unknown bump '$BUMP'" >&2; exit 1 ;;
+          esac
+          VERSION="${MAJOR}.${MINOR}.${PATCH}"
+          TAG="v${VERSION}"
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists" >&2
+            exit 1
+          fi
+          echo "Previous release: ${PREVIOUS:-none}. This release: $TAG"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      # Before anything is committed or tagged, so a bad frame never leaves a
+      # stray tag behind.
+      - name: Check every frame
+        run: pnpm validate
+
+      - name: Record the version
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          jq --arg v "$VERSION" '.version = $v' package.json > package.json.tmp
+          mv package.json.tmp package.json
+
+      - name: Commit and tag
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add package.json
+          git commit -m "chore: release $TAG"
+          git tag -a "$TAG" -m "Release $TAG"
+          if ! git push origin HEAD; then
+            echo "::error::Could not push to the default branch. If it is protected, either allow github-actions[bot] to bypass the rules, or unprotect it." >&2
+            exit 1
+          fi
+          git push origin "$TAG"
+
+      # After tagging, so the index's download URLs are already correct.
+      - name: Build every frame
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          pnpm exec frame-kit build \
+            --out dist \
+            --version "$VERSION" \
+            --repository "$GITHUB_REPOSITORY" \
+            --tag "$TAG" \
+            --summary-md "$GITHUB_STEP_SUMMARY"
+
+      - name: Write the release notes
+        env:
+          # Through the environment, never into the script body: a workflow
+          # input pasted straight into `run:` is a command-injection hole, and
+          # this file gets copied into other people's repositories.
+          NOTES: ${{ inputs.notes }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          {
+            if [ -n "$NOTES" ]; then printf '%s\n\n' "$NOTES"; fi
+            printf '## Frames in this release\n\n'
+            printf '| Frame | Size | Download |\n| --- | --- | --- |\n'
+            jq -r '.frames[]
+              | "| \(.name) | \((.bundle.bytes / 1048576 * 10 | round) / 10) MB | [`\(.bundle.file)`](\(.bundle.url)) |"' \
+              dist/frame-index.json
+            printf '\n## Installing\n\nDownload a `.cardframe` file below and import it into Card Anvil.\n'
+            printf '\nMachine-readable index, always pointing at the newest release:\n\n'
+            printf '    https://github.com/%s/releases/latest/download/frame-index.json\n' "$REPOSITORY"
+          } > dist/RELEASE_NOTES.md
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          # --latest is what makes releases/latest/download/frame-index.json
+          # resolve, and is why this is published rather than drafted.
+          gh release create "$TAG" \
+            --title "$TAG" \
+            --notes-file dist/RELEASE_NOTES.md \
+            --latest \
+            --verify-tag \
+            dist/frame-index.json \
+            dist/*.cardframe \
+            dist/*.preview.*

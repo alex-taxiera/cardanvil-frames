@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Question about the frame contract or the packaging tools
+    url: https://github.com/Card-Anvil/frames/issues
+    about: Ask upstream — this repository is for your frames, not the tooling.
