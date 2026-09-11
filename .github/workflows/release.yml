@@ -38,7 +38,7 @@ jobs:
           # all for its first release; the step below handles that.
           fetch-depth: 0
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
 
       - uses: actions/setup-node@v5
         with:
