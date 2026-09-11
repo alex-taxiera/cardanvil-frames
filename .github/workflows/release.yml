@@ -94,7 +94,15 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add package.json
-          git commit -m "chore: release $TAG"
+          # package.json may already carry this version: a repository whose
+          # first release is a minor bump computes 0.1.0, and a template that
+          # shipped "version": "0.1.0" leaves nothing to record. The tag still
+          # belongs on the commit as it stands.
+          if git diff --cached --quiet; then
+            echo "package.json is already at the version for $TAG; tagging HEAD as it stands."
+          else
+            git commit -m "chore: release $TAG"
+          fi
           git tag -a "$TAG" -m "Release $TAG"
           if ! git push origin HEAD; then
             echo "::error::Could not push to the default branch. If it is protected, either allow github-actions[bot] to bypass the rules, or unprotect it." >&2
