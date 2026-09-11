@@ -110,8 +110,8 @@ importers:
   .:
     dependencies:
       '@cardanvil/frame-kit':
-        specifier: ^0.3.1
-        version: 0.3.1(vite@7.3.6(@types/node@24.13.3))(zod@4.5.4)
+        specifier: ^0.4.0
+        version: 0.4.0(vite@7.3.6(@types/node@24.13.3))(zod@4.5.4)
     devDependencies:
       '@eslint/js':
         specifier: ^10.0.1
@@ -192,8 +192,8 @@ packages:
   '@cacheable/utils@2.5.0':
     resolution: {integrity: sha512-buipgOVDkkPXNR5+xBpDw7Zk2n1EvU7qBJCNUcL7rhQ//kfpOXPAvQ511Os0vpLYJ1pZnvudNytkQt2hst3wqA==}
 
-  '@cardanvil/frame-kit@0.3.1':
-    resolution: {integrity: sha512-mm/ZbW++2fTOgYgdJR98mw43IFad3kjcCki4JWaJAEihww1aJ8rlTP8vsnH+LuqkdBbeuvi1YjpJso8Ja+6kww==}
+  '@cardanvil/frame-kit@0.4.0':
+    resolution: {integrity: sha512-HicJqLtX4VRxNH0jypD2AoRp3piXl/MiVGLz+MLzzFu9qJR4qSZtMWKp2dBl+VidDL09hBXKoBm+1/1bUMvGKg==}
     engines: {node: '>=22'}
     hasBin: true
     peerDependencies:
@@ -1137,7 +1137,7 @@ snapshots:
       hashery: 1.5.1
       keyv: 5.6.0
 
-  '@cardanvil/frame-kit@0.3.1(vite@7.3.6(@types/node@24.13.3))(zod@4.5.4)':
+  '@cardanvil/frame-kit@0.4.0(vite@7.3.6(@types/node@24.13.3))(zod@4.5.4)':
     dependencies:
       yazl: 3.3.1
       zod: 4.5.4

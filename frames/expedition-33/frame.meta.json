@@ -1,0 +1,10 @@
+{
+  "$schema": "../../node_modules/@cardanvil/frame-kit/schema/frame-meta.schema.json",
+  "id": "com.github.alex-taxiera.expedition-33",
+  "entry": "./index.ts",
+  "export": "expedition33Frame",
+  "author": {
+    "name": "Alex Taxiera"
+  },
+  "license": "CC-BY-4.0"
+}
