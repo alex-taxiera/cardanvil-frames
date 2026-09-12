@@ -14,7 +14,8 @@ import * as pt from "./pt";
  */
 export const expedition33Frame = {
   name: "Expedition 33",
-  description: "A custom frame inspired by Clair Obscur: Expedition 33. Assets made by TorskeRavn.",
+  description:
+    "A custom frame inspired by Clair Obscur: Expedition 33. Assets made by TorskeRavn.",
   previewImage: preview,
   tags: ["Custom"],
   config: {
