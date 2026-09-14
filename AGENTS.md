@@ -64,6 +64,25 @@ app. A failed rebuild leaves the previous bundle in place rather than dropping t
 edit that does not change the built output produces an identical bundle, so the app correctly does
 nothing.
 
+## Designing boxes with the studio
+
+`pnpm studio` serves a visual editor at <http://localhost:4620> that draws every
+box over the real frame art and **writes coordinate changes back into the source**.
+
+Two things follow from that, both of which matter when you are working in this
+repo alongside a person:
+
+- Coordinates in `boxes.ts` can change without you editing them. If a file looks
+  different from what you last wrote, the studio may have saved a drag. Re-read
+  before editing rather than assuming your copy is current.
+- A box value shared between layouts — spread from another box set, or supplied
+  as a helper default — is one literal. Editing it moves every layout that reads
+  it. The studio reports this; so should you, before changing such a value.
+
+The studio refuses to edit anything it cannot trace to a literal, and verifies
+the literal against the loaded frame before writing, so a value it cannot
+account for is left alone rather than guessed at.
+
 ## Adding a frame
 
 Use `pnpm new-frame` rather than copying by hand — it derives the export name, the id and the

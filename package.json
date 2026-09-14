@@ -11,6 +11,7 @@
   },
   "scripts": {
     "new-frame": "node scripts/new-frame.js",
+    "studio": "frame-kit studio",
     "validate": "frame-kit validate",
     "build": "frame-kit build --out dist",
     "watch": "frame-kit build --out dist --watch",

@@ -54,6 +54,65 @@ top of the card, in the part that gets trimmed off.
 
 `fontSize` is in **points**, not pixels. The renderer converts.
 
+## Design your boxes visually
+
+Typing coordinates and guessing is the slow way. Run:
+
+```bash
+pnpm studio
+```
+
+and open <http://localhost:4620>. You get every frame in this repo, every layout,
+and every box drawn on top of the real frame art. Drag a box or resize it with
+its handles, or type into the inspector on the right, and **`boxes.ts` is edited
+for you** — just the number, with your comments and formatting untouched. Arrow
+keys nudge by one pixel, shift-arrow by ten.
+
+Because it writes to your source, run it on a clean working tree so `git diff`
+shows you exactly what changed. `pnpm studio --no-write` opens it read-only if
+you just want to look.
+
+Getting around: scroll to zoom, drag the background to pan, `0` fits the sheet
+and `1` is 100%. Boxes snap to the card edges, the centre lines and each other;
+hold `alt` while dragging to ignore that. `ctrl+z` undoes, `ctrl+shift+z` redoes.
+
+The **Card** panel on the right is the colour picker: choose an identity and
+tick what the card is — artifact, vehicle, land, enchantment, hybrid, devoid,
+colourless. The studio then picks the frame art the app would pick, including
+the awkward combinations: a two-colour gold card gets split pinlines, a hybrid
+pair renders as two halves under a colourless wash, a coloured artifact keeps
+the artifact body, and devoid stays coloured underneath a colourless frame. The
+line beneath tells you which base frame and overlays it chose.
+
+Crowns, nicknames and PT plates are toggles in **Decorations**, drawn where the
+layout's `crownConfig`, `nicknameConfig` and `ptImage` put them — so if a crown
+looks wrong, it is your numbers, not the preview.
+
+**Layout knobs** on the right edits the numbers with no box to drag: ability
+spacing, padding, crown and nickname offsets. Switching on a mask shows the
+silhouette the renderer cuts.
+
+If a value is shared — frames commonly spread one box set into several layouts —
+the studio says so on the field (`shared ×12`) and asks before saving, listing
+every layout that moves with it.
+
+Each field shows where it comes from, like `boxes.ts:24`. A field can also come
+out locked — that happens when the value is not written as a plain number, for
+example when a layout is built by a function or computed from another value.
+The studio says which, and points at the line that really produces it, rather
+than guessing and editing the wrong thing.
+
+It draws the card name and type line in the real font at the size you set, so
+you can see whether they fit — pick `typical`, `long` or `worst text` from the
+toolbar, or type your own on the right. A line too wide for its box is flagged
+`overflows by Npx`.
+
+That preview is one line only. There is no rules text, no mana symbols and no
+automatic font shrinking — Card Anvil shrinks the title around the mana cost and
+the type line around the set symbol, and none of that runs here. It is for
+getting the geometry right; the app is still what tells you the frame really
+renders.
+
 ## Art comes in barrels
 
 An `index.ts` beside your images exports them by name, and that file _is_ an asset set:
@@ -193,6 +252,7 @@ ones.
 | Command                     | What it does                  |
 | --------------------------- | ----------------------------- |
 | `pnpm new-frame`            | Scaffold a new frame          |
+| `pnpm studio`               | Edit boxes visually           |
 | `pnpm validate`             | Check every frame             |
 | `pnpm build`                | Pack every frame into `dist/` |
 | `pnpm watch`                | Repack into `dist/` on save   |
