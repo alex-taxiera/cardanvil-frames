@@ -217,8 +217,9 @@ async function main() {
 Created ${shown}
 
   1. Replace the art in ${shown}/base/ with your own.
-  2. pnpm validate
-  3. Commit, then Actions -> Release frames -> Run workflow.
+  2. pnpm studio  — position the boxes over it, visually
+  3. pnpm validate
+  4. Commit, then Actions -> Release frames -> Run workflow.
 `);
   } finally {
     rl?.close();
