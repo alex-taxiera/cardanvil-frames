@@ -96,6 +96,16 @@ every `.cardframe`, every preview, and `frame-index.json`.
 
 Never hand-edit `version` in `package.json`; the workflow owns it.
 
+## Before you commit
+
+`pnpm install` installs a husky pre-commit hook that runs what the `validate` workflow runs,
+minus the tests: lint-staged fixes and formats the staged files, then `pnpm validate`,
+`pnpm typecheck`, and a pack into `node_modules/.cache/frame-pack`. It takes a few seconds and
+stops at the first failure, so a red PR should be a surprise.
+
+To commit past it — a work-in-progress commit on a branch, say — use `git commit --no-verify`.
+CI still has the final word.
+
 ## Commits
 
 [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/):
