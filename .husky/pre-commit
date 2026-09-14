@@ -1,0 +1,25 @@
+#!/usr/bin/env sh
+cd "$(git rev-parse --show-toplevel)" || exit 1
+
+# Ensure node is on PATH (Cursor/IDE git often doesn't load shell profile)
+if ! command -v node >/dev/null 2>&1; then
+  export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+  [ -s "$HOME/.local/share/fnm/fnm.sh" ] && \. "$HOME/.local/share/fnm/fnm.sh"
+  export PATH="${VOLTA_HOME:-$HOME/.volta}/bin:$PATH"
+fi
+
+# The same checks the validate workflow runs, in the same order, so a red PR is
+# a surprise rather than the norm. Unlike CI this stops at the first failure —
+# on your own machine the next run is seconds away.
+set -e
+
+# Lint and format, but only what is being committed.
+./node_modules/.bin/lint-staged
+
+pnpm validate
+pnpm typecheck
+
+# Proves the frames still pack. Output goes under node_modules so it is already
+# ignored and the next run overwrites it.
+pnpm exec frame-kit build --out node_modules/.cache/frame-pack --version 0.0.0-precommit
