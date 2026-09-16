@@ -110,8 +110,8 @@ importers:
   .:
     dependencies:
       '@cardanvil/frame-kit':
-        specifier: ^0.4.0
-        version: 0.4.0(vite@7.3.6(@types/node@24.13.3)(yaml@2.9.1))(zod@4.5.4)
+        specifier: ^0.6.0
+        version: 0.6.0(typescript@6.0.3)(vite@7.3.6(@types/node@24.13.3)(yaml@2.9.1))(zod@4.5.4)
     devDependencies:
       '@eslint/js':
         specifier: ^10.0.1
@@ -198,14 +198,17 @@ packages:
   '@cacheable/utils@2.5.0':
     resolution: {integrity: sha512-buipgOVDkkPXNR5+xBpDw7Zk2n1EvU7qBJCNUcL7rhQ//kfpOXPAvQ511Os0vpLYJ1pZnvudNytkQt2hst3wqA==}
 
-  '@cardanvil/frame-kit@0.4.0':
-    resolution: {integrity: sha512-HicJqLtX4VRxNH0jypD2AoRp3piXl/MiVGLz+MLzzFu9qJR4qSZtMWKp2dBl+VidDL09hBXKoBm+1/1bUMvGKg==}
+  '@cardanvil/frame-kit@0.6.0':
+    resolution: {integrity: sha512-FT+W/iN4BK12KR7hjk6agKPqwTt27cB44xbqG3Pk20k7Ul5IGw49BhVwjfhL2ppt+u3tS3W9GxTy+Eh12YFKFA==}
     engines: {node: '>=22'}
     hasBin: true
     peerDependencies:
+      typescript: ^6
       vite: ^6 || ^7
       zod: ^4
     peerDependenciesMeta:
+      typescript:
+        optional: true
       vite:
         optional: true
 
@@ -1166,11 +1169,12 @@ snapshots:
       hashery: 1.5.1
       keyv: 5.6.0
 
-  '@cardanvil/frame-kit@0.4.0(vite@7.3.6(@types/node@24.13.3)(yaml@2.9.1))(zod@4.5.4)':
+  '@cardanvil/frame-kit@0.6.0(typescript@6.0.3)(vite@7.3.6(@types/node@24.13.3)(yaml@2.9.1))(zod@4.5.4)':
     dependencies:
       yazl: 3.3.1
       zod: 4.5.4
     optionalDependencies:
+      typescript: 6.0.3
       vite: 7.3.6(@types/node@24.13.3)(yaml@2.9.1)
 
   '@esbuild/aix-ppc64@0.28.2':
